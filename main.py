@@ -29,8 +29,18 @@ def main():
 
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
+    
     dt = 0
+    points = 0
+    
+
+    pygame.font.init()
+    my_font = pygame.font.SysFont('Comic Sans MS', 30)
+
+    
+    def draw_text(text, font, color, x, y):
+        img = font.render(text, True, color)
+        screen.blit(img, (x,y))
 
     while True:
         for event in pygame.event.get(): 
@@ -43,9 +53,16 @@ def main():
             if asteroid.collides_with(player):
                 print("Game over!")
                 sys.exit()
-
-        screen.fill("black")
-
+            
+            for shot in shots:
+                if asteroid.collides_with(shot):
+                    asteroid.kill()
+                    shot.kill()
+                    points += 1
+                    break
+        screen.fill("Black")
+        draw_text(f"Points: {points}", my_font, "Green", 0, 0)
+        
         for obj in drawable:
             obj.draw(screen)
 
