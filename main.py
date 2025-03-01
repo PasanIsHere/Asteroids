@@ -51,8 +51,12 @@ def main():
 
         for asteroid in asteroids:
             if asteroid.collides_with(player):
-                print("Game over!")
-                sys.exit()
+                player.take_damage(dt)
+                asteroid.kill()
+                if player.health <= 0:
+                    print("Game over!")
+                    exit()   
+                break
             
             for shot in shots:
                 if asteroid.collides_with(shot):
@@ -61,8 +65,7 @@ def main():
                     points += 1
                     break
         screen.fill("Black")
-        draw_text(f"Points: {points}", my_font, "Green", 0, 0)
-        
+        draw_text(f"Points: {points}    Health: {player.health}" , my_font, "Green", 0, 0)
         for obj in drawable:
             obj.draw(screen)
 

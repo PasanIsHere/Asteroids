@@ -1,7 +1,7 @@
 import pygame
 
 from circleshape import CircleShape
-from constants import PLAY_SPEED, PLAYER_RADIUS, PLAYER_SHOOT_SPEED, PLAYER_TURN_SPEED, SHOT_RADIUS, PLAYER_SHOOT_COOLDOWN
+from constants import PLAY_SPEED, PLAYER_IFRAME_TIME, PLAYER_RADIUS, PLAYER_SHOOT_SPEED, PLAYER_TURN_SPEED, SHOT_RADIUS, PLAYER_SHOOT_COOLDOWN, PLAYER_IFRAME_TIME
 from shot import Shot
 
 
@@ -12,17 +12,17 @@ class Player(CircleShape):
         super().__init__(x,y,PLAYER_RADIUS)
         self.rotation = 0
         self.shoot_cooldown_timer = 0
-
-
+        self.iframe_cooldown = 0
+        self.health = 3
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "green", self.triangle(),2)
     
     def update(self, dt):
         self.shoot_cooldown_timer -= dt
-    
+        self.iframe_cooldown -= dt 
         keys = pygame.key.get_pressed()
-        
+         
         if keys[pygame.K_a]:
             self.rotate(-dt)
         if keys[pygame.K_d]:
@@ -33,6 +33,15 @@ class Player(CircleShape):
             self.move(-dt)
         if keys[pygame.K_SPACE]:
             self.shoot()
+    
+    def take_damage(self, dt):
+        if self.iframe_cooldown > 0:
+            return
+        self.iframe_cooldown = PLAYER_IFRAME_TIME * dt
+        self.health -= 1
+        
+
+
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
